@@ -1,0 +1,728 @@
+<!--
+  © shikamaro_ai
+  本コンテンツの無断複製・再配布・第三者への転売を禁じます。
+  Unauthorized copying, redistribution, or resale is prohibited.
+-->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>やさしい日本語 介護のことば</title>
+<style>
+  :root {
+    --bg: #F1F5F1;
+    --panel: #FFFFFF;
+    --ink: #1E2B29;
+    --ink-soft: #5B6E68;
+    --line: #D9E3DD;
+    --teal: #2F6659;
+    --teal-deep: #1E4A40;
+    --coral: #E2724F;
+    --coral-soft: #FBE4DA;
+    --gold: #C99A3A;
+    --radius-card: 20px;
+    --radius-pill: 999px;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  *, *::before, *::after { box-sizing: inherit; }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); height: 100%; }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #16201D;
+      --panel: #1F2B27;
+      --ink: #EAF2EE;
+      --ink-soft: #9DB0A9;
+      --line: #33443E;
+      --teal: #6FBFA6;
+      --teal-deep: #8FD4BC;
+      --coral: #F19A78;
+      --coral-soft: #3A2A24;
+      --gold: #D8B463;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #16201D;
+    --panel: #1F2B27;
+    --ink: #EAF2EE;
+    --ink-soft: #9DB0A9;
+    --line: #33443E;
+    --teal: #6FBFA6;
+    --teal-deep: #8FD4BC;
+    --coral: #F19A78;
+    --coral-soft: #3A2A24;
+    --gold: #D8B463;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100%;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Yu Gothic", "Noto Sans JP", system-ui, sans-serif;
+    display: flex;
+    justify-content: center;
+  }
+
+  .app {
+    width: 100%;
+    max-width: 480px;
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+
+  header.top {
+    padding: 22px 20px 16px;
+    position: sticky;
+    top: env(safe-area-inset-top, 0px);
+    background: var(--bg);
+    z-index: 5;
+    border-bottom: 1px solid var(--line);
+  }
+  header.top .kicker {
+    font-size: 13px;
+    color: var(--teal);
+    letter-spacing: 0.02em;
+    margin: 0 0 4px;
+  }
+  header.top h1 {
+    margin: 0;
+    font-size: 22px;
+    line-height: 1.4;
+    font-weight: 700;
+  }
+  header.top h1 .sub {
+    display: block;
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--ink-soft);
+    margin-top: 4px;
+  }
+
+  main {
+    flex: 1;
+    padding: 18px 20px 100px;
+    overflow-y: auto;
+  }
+
+  /* --- カテゴリ一覧 --- */
+  .cat-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .cat-card {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-card);
+    padding: 16px 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    text-align: left;
+    cursor: pointer;
+    font-family: inherit;
+    color: inherit;
+    width: 100%;
+  }
+  .cat-card .icon {
+    font-size: 26px;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: var(--coral-soft);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .cat-card .meta { flex: 1; min-width: 0; }
+  .cat-card .meta .name { font-weight: 700; font-size: 16px; }
+  .cat-card .meta .count { font-size: 13px; color: var(--ink-soft); margin-top: 2px; }
+  .cat-card .bar-track {
+    margin-top: 8px;
+    height: 5px;
+    background: var(--line);
+    border-radius: var(--radius-pill);
+    overflow: hidden;
+  }
+  .cat-card .bar-fill {
+    height: 100%;
+    background: var(--teal);
+    border-radius: var(--radius-pill);
+  }
+  .cat-card .chev { color: var(--ink-soft); font-size: 18px; }
+
+  /* --- フラッシュカード --- */
+  .back-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+  .back-btn {
+    border: none;
+    background: none;
+    color: var(--teal);
+    font-size: 15px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    padding: 4px 0;
+  }
+  .progress-tag {
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+
+  .flash-wrap {
+    perspective: 1200px;
+    margin-bottom: 18px;
+  }
+  .flashcard {
+    position: relative;
+    min-height: 300px;
+    border-radius: 24px;
+    transition: transform 0.5s cubic-bezier(.4,.2,.2,1);
+    transform-style: preserve-3d;
+    cursor: pointer;
+  }
+  .flashcard.flipped { transform: rotateY(180deg); }
+  .face {
+    position: absolute;
+    inset: 0;
+    backface-visibility: hidden;
+    border-radius: 24px;
+    border: 1px solid var(--line);
+    background: var(--panel);
+    padding: 28px 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    gap: 14px;
+  }
+  .face.back { transform: rotateY(180deg); align-items: flex-start; text-align: left; justify-content: flex-start; padding-top: 30px; }
+  .term-kanji {
+    font-size: 34px;
+    font-weight: 700;
+    line-height: 1.6;
+  }
+  .term-kanji ruby rt { font-size: 14px; color: var(--teal); }
+  .tap-hint { font-size: 13px; color: var(--ink-soft); }
+
+  .face.back .label {
+    font-size: 12px;
+    color: var(--teal);
+    font-weight: 700;
+    margin-bottom: 2px;
+  }
+  .face.back .block { margin-bottom: 16px; width: 100%; }
+  .face.back .easy-text { font-size: 16px; line-height: 1.7; }
+  .face.back .example { font-size: 15px; line-height: 1.8; color: var(--ink); background: var(--coral-soft); padding: 10px 12px; border-radius: 12px; }
+  .face.back .en { font-size: 14px; color: var(--ink-soft); font-style: italic; }
+
+  .card-nav {
+    display: flex;
+    gap: 10px;
+  }
+  .nav-btn {
+    flex: 1;
+    padding: 13px 0;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--line);
+    background: var(--panel);
+    color: var(--ink);
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .nav-btn.mastered { background: var(--teal); color: #fff; border-color: var(--teal); }
+  .nav-btn.again { background: var(--panel); color: var(--coral); border-color: var(--coral); }
+
+  /* --- クイズ --- */
+  .quiz-progress {
+    font-size: 13px;
+    color: var(--ink-soft);
+    margin-bottom: 10px;
+  }
+  .quiz-question {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    padding: 22px 20px;
+    margin-bottom: 16px;
+  }
+  .quiz-question .qlabel { font-size: 12px; color: var(--teal); font-weight: 700; margin-bottom: 8px; }
+  .quiz-question .qtext { font-size: 17px; line-height: 1.7; }
+  .quiz-options { display: flex; flex-direction: column; gap: 10px; }
+  .opt-btn {
+    text-align: left;
+    padding: 14px 16px;
+    border-radius: 14px;
+    border: 1px solid var(--line);
+    background: var(--panel);
+    font-size: 16px;
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .opt-btn ruby rt { font-size: 11px; color: var(--teal); }
+  .opt-btn.correct { border-color: var(--teal); background: rgba(47,102,89,0.12); }
+  .opt-btn.wrong { border-color: var(--coral); background: var(--coral-soft); }
+  .opt-btn:disabled { cursor: default; }
+  .quiz-next {
+    margin-top: 16px;
+    width: 100%;
+    padding: 14px 0;
+    border-radius: var(--radius-pill);
+    border: none;
+    background: var(--teal);
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .quiz-result {
+    text-align: center;
+    padding: 40px 20px;
+  }
+  .quiz-result .big { font-size: 40px; font-weight: 700; color: var(--teal); }
+  .quiz-result p { color: var(--ink-soft); line-height: 1.7; }
+
+  /* --- 進捗 --- */
+  .summary-card {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    padding: 20px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .summary-card .num { font-size: 32px; font-weight: 700; color: var(--teal); }
+  .summary-card .lbl { font-size: 13px; color: var(--ink-soft); }
+  .prog-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .prog-row:last-child { border-bottom: none; }
+  .prog-row .name { flex: 1; font-size: 15px; font-weight: 600; }
+  .prog-row .frac { font-size: 13px; color: var(--ink-soft); width: 50px; text-align: right; }
+  .reset-btn {
+    margin-top: 6px;
+    width: 100%;
+    padding: 13px 0;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--line);
+    background: none;
+    color: var(--coral);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  /* --- タブバー --- */
+  nav.tabbar {
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: env(safe-area-inset-bottom, 0px);
+    width: 100%;
+    max-width: 480px;
+    background: var(--panel);
+    border-top: 1px solid var(--line);
+    display: flex;
+    padding: 8px 10px calc(8px + env(safe-area-inset-bottom, 0px));
+    gap: 4px;
+    z-index: 10;
+  }
+  .tab-btn {
+    flex: 1;
+    background: none;
+    border: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    padding: 6px 0;
+    color: var(--ink-soft);
+    font-size: 11px;
+    font-family: inherit;
+    cursor: pointer;
+  }
+  .tab-btn .ic { font-size: 20px; }
+  .tab-btn.active { color: var(--teal); font-weight: 700; }
+
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header class="top">
+    <p class="kicker">やさしい日本語</p>
+    <h1 id="pageTitle">介護のことば
+      <span class="sub">現場でよく使う言葉を、絵カードで少しずつ覚えます</span>
+    </h1>
+  </header>
+
+  <main id="main"></main>
+
+  <nav class="tabbar">
+    <button class="tab-btn active" data-tab="learn"><span class="ic">📗</span>学ぶ</button>
+    <button class="tab-btn" data-tab="quiz"><span class="ic">✏️</span>クイズ</button>
+    <button class="tab-btn" data-tab="progress"><span class="ic">📊</span>進捗</button>
+  </nav>
+
+</div>
+
+<script>
+(function(){
+
+  // ---------- データ ----------
+  var CATS = [
+    { id: "greet", name: "あいさつ・声かけ", icon: "🙋" },
+    { id: "meal", name: "食事介助", icon: "🍚" },
+    { id: "toilet", name: "排泄介助", icon: "🚻" },
+    { id: "bath", name: "入浴・清潔", icon: "🛁" },
+    { id: "move", name: "移動・移乗", icon: "🦽" },
+    { id: "record", name: "記録・申し送り", icon: "📋" },
+    { id: "emergency", name: "緊急時", icon: "🚨" }
+  ];
+
+  // term: 漢字, furi: ふりがな, easy: やさしい日本語の説明, ex: 例文（漢字＋ふりがな）, en: 簡単な英語
+  var WORDS = {
+    greet: [
+      { term:"体調", furi:"たいちょう", easy:"体の調子。元気か、元気じゃないか。", ex:"今日の<r>体調|たいちょう</r>はどうですか。", en:"physical condition" },
+      { term:"声掛け", furi:"こえかけ", easy:"何かする前に、相手に言葉で伝えること。", ex:"<r>移乗|いじょう</r>の前に<r>声掛け|こえかけ</r>をします。", en:"verbal cue before an action" },
+      { term:"傾聴", furi:"けいちょう", easy:"相手の話をよく聞くこと。", ex:"利用者の話を<r>傾聴|けいちょう</r>します。", en:"active listening" },
+      { term:"見守り", furi:"みまもり", easy:"そばで注意して見ること。", ex:"転ばないように<r>見守り|みまもり</r>をします。", en:"watching over / supervision" },
+      { term:"訪室", furi:"ほうしつ", easy:"部屋に入って様子を見ること。", ex:"1時間ごとに<r>訪室|ほうしつ</r>します。", en:"visiting a resident's room" },
+      { term:"体温", furi:"たいおん", easy:"体のあたたかさ。おでこや脇で測ります。", ex:"<r>体温|たいおん</r>を測ります。", en:"body temperature" }
+    ],
+    meal: [
+      { term:"経口摂取", furi:"けいこうせっしゅ", easy:"口から食べたり飲んだりすること。", ex:"<r>経口摂取|けいこうせっしゅ</r>ができるか確認します。", en:"eating/drinking by mouth" },
+      { term:"嚥下", furi:"えんげ", easy:"食べ物を飲み込むこと。", ex:"<r>嚥下|えんげ</r>が難しい人は、食べ物を小さくします。", en:"swallowing" },
+      { term:"むせ", furi:"むせ", easy:"食べ物が変なところに入って、咳が出ること。", ex:"食事中に<r>むせ|むせ</r>がありました。", en:"choking / coughing while eating" },
+      { term:"刻み食", furi:"きざみしょく", easy:"食べ物を小さく切った食事。", ex:"この方は<r>刻み食|きざみしょく</r>です。", en:"minced/chopped food" },
+      { term:"とろみ", furi:"とろみ", easy:"飲み物や食べ物を少しどろっとさせること。", ex:"お茶に<r>とろみ|とろみ</r>をつけます。", en:"thickened liquid" },
+      { term:"下膳", furi:"げぜん", easy:"食事が終わったお皿を片付けること。", ex:"食事が終わったら<r>下膳|げぜん</r>します。", en:"clearing the meal tray" }
+    ],
+    toilet: [
+      { term:"排泄", furi:"はいせつ", easy:"おしっこやうんちを出すこと。", ex:"<r>排泄|はいせつ</r>の介助をします。", en:"toileting / elimination" },
+      { term:"失禁", furi:"しっきん", easy:"トイレ以外でおしっこやうんちが出てしまうこと。", ex:"今日は<r>失禁|しっきん</r>がありました。", en:"incontinence" },
+      { term:"おむつ交換", furi:"おむつこうかん", easy:"新しいおむつに替えること。", ex:"2時間ごとに<r>おむつ交換|おむつこうかん</r>をします。", en:"changing a diaper" },
+      { term:"陰部洗浄", furi:"いんぶせんじょう", easy:"体の下の部分をきれいに洗うこと。", ex:"おむつ交換のあと<r>陰部洗浄|いんぶせんじょう</r>をします。", en:"perineal/genital cleansing" },
+      { term:"尿量", furi:"にょうりょう", easy:"出たおしっこの量。", ex:"<r>尿量|にょうりょう</r>を記録します。", en:"urine output" }
+    ],
+    bath: [
+      { term:"入浴介助", furi:"にゅうよくかいじょ", easy:"お風呂に入る手伝いをすること。", ex:"午後から<r>入浴介助|にゅうよくかいじょ</r>があります。", en:"bathing assistance" },
+      { term:"清拭", furi:"せいしき", easy:"お風呂に入れない時、体をふいてきれいにすること。", ex:"今日はお風呂の代わりに<r>清拭|せいしき</r>をします。", en:"bed bath / body wiping" },
+      { term:"洗髪", furi:"せんぱつ", easy:"髪の毛を洗うこと。", ex:"入浴のときに<r>洗髪|せんぱつ</r>もします。", en:"hair washing" },
+      { term:"皮膚状態", furi:"ひふじょうたい", easy:"肌の様子。赤い、傷があるなど。", ex:"入浴のときに<r>皮膚状態|ひふじょうたい</r>を確認します。", en:"skin condition" },
+      { term:"褥瘡", furi:"じょくそう", easy:"長い時間同じ場所が圧迫されてできる、皮膚の傷。", ex:"背中に<r>褥瘡|じょくそう</r>がないか見ます。", en:"pressure ulcer / bedsore" }
+    ],
+    move: [
+      { term:"移乗", furi:"いじょう", easy:"ベッドから車いすなど、場所を移ること。", ex:"ベッドから車いすへ<r>移乗|いじょう</r>します。", en:"transferring (bed to chair etc.)" },
+      { term:"車いす", furi:"くるまいす", easy:"座ったまま動ける、車のついたいす。", ex:"<r>車いす|くるまいす</r>を押します。", en:"wheelchair" },
+      { term:"歩行介助", furi:"ほこうかいじょ", easy:"歩く手伝いをすること。", ex:"廊下で<r>歩行介助|ほこうかいじょ</r>をします。", en:"walking assistance" },
+      { term:"体位交換", furi:"たいいこうかん", easy:"寝ている向きを変えること。", ex:"2時間ごとに<r>体位交換|たいいこうかん</r>をします。", en:"repositioning" },
+      { term:"転倒", furi:"てんとう", easy:"転んでしまうこと。", ex:"<r>転倒|てんとう</r>に気をつけて見守ります。", en:"falling / a fall" }
+    ],
+    record: [
+      { term:"申し送り", furi:"もうしおくり", easy:"次の担当者に、大事なことを伝えること。", ex:"夜勤に<r>申し送り|もうしおくり</r>をします。", en:"shift handover" },
+      { term:"バイタル", furi:"ばいたる", easy:"体温、脈、血圧など、体の基本の数字。", ex:"朝一番に<r>バイタル|ばいたる</r>を測ります。", en:"vital signs" },
+      { term:"記録", furi:"きろく", easy:"あったことを紙やパソコンに書くこと。", ex:"介助が終わったら<r>記録|きろく</r>をつけます。", en:"documentation / recording" },
+      { term:"変化なし", furi:"へんかなし", easy:"いつもと同じで、問題がないこと。", ex:"本日は<r>変化なし|へんかなし</r>です。", en:"no change (stable)" },
+      { term:"経過観察", furi:"けいかかんさつ", easy:"今すぐ何もしないで、様子を見続けること。", ex:"しばらく<r>経過観察|けいかかんさつ</r>をします。", en:"monitoring / watchful waiting" }
+    ],
+    emergency: [
+      { term:"意識", furi:"いしき", easy:"目が覚めていて、周りが分かる状態。", ex:"<r>意識|いしき</r>があるか確認します。", en:"consciousness" },
+      { term:"呼吸", furi:"こきゅう", easy:"息をすること。", ex:"<r>呼吸|こきゅう</r>が苦しそうです。", en:"breathing / respiration" },
+      { term:"救急要請", furi:"きゅうきゅうようせい", easy:"119番に電話して、救急車を呼ぶこと。", ex:"すぐに<r>救急要請|きゅうきゅうようせい</r>をしてください。", en:"calling an ambulance" },
+      { term:"誤嚥", furi:"ごえん", easy:"食べ物が気管（呼吸の道）に入ってしまうこと。", ex:"<r>誤嚥|ごえん</r>の疑いがあります。", en:"aspiration (food entering airway)" },
+      { term:"応援を呼ぶ", furi:"おうえんをよぶ", easy:"他の職員に、すぐ来てもらうこと。", ex:"大きな声で<r>応援を呼ぶ|おうえんをよぶ</r>してください。", en:"calling for backup / help" }
+    ]
+  };
+
+  // ---------- ルビ変換 ----------
+  function renderRuby(str){
+    return str.replace(/<r>(.*?)\|(.*?)<\/r>/g, function(_, k, f){
+      return "<ruby>"+k+"<rt>"+f+"</rt></ruby>";
+    });
+  }
+
+  // ---------- 進捗保存 ----------
+  var STORE_KEY = "kaigo_yasashii_nihongo_progress_v1";
+  function loadProgress(){
+    try {
+      var raw = localStorage.getItem(STORE_KEY);
+      return raw ? JSON.parse(raw) : {};
+    } catch(e){ return {}; }
+  }
+  function saveProgress(p){
+    try { localStorage.setItem(STORE_KEY, JSON.stringify(p)); } catch(e){}
+  }
+  var progress = loadProgress(); // { catId: { termIndex: true } }
+
+  function masteredCount(catId){
+    var p = progress[catId] || {};
+    return Object.keys(p).filter(function(k){ return p[k]; }).length;
+  }
+  function totalCount(catId){ return WORDS[catId].length; }
+  function totalMasteredAll(){
+    var sum = 0;
+    CATS.forEach(function(c){ sum += masteredCount(c.id); });
+    return sum;
+  }
+  function totalAll(){
+    var sum = 0;
+    CATS.forEach(function(c){ sum += totalCount(c.id); });
+    return sum;
+  }
+
+  // ---------- 状態 ----------
+  var state = { tab: "learn", catId: null, cardIndex: 0, flipped: false };
+  var main = document.getElementById("main");
+  var titleEl = document.getElementById("pageTitle");
+
+  function setTab(tab){
+    state.tab = tab;
+    state.catId = null;
+    document.querySelectorAll(".tab-btn").forEach(function(b){
+      b.classList.toggle("active", b.dataset.tab === tab);
+    });
+    render();
+  }
+
+  document.querySelectorAll(".tab-btn").forEach(function(btn){
+    btn.addEventListener("click", function(){ setTab(btn.dataset.tab); });
+  });
+
+  function render(){
+    if (state.tab === "learn") {
+      if (state.catId) renderFlashcards();
+      else renderCatList("learn");
+    } else if (state.tab === "quiz") {
+      if (state.catId) renderQuiz();
+      else renderCatList("quiz");
+    } else {
+      renderProgressView();
+    }
+  }
+
+  function renderCatList(mode){
+    titleEl.innerHTML = mode === "quiz"
+      ? "介護のことば<span class=\"sub\">クイズに挑戦することばを選びます</span>"
+      : "介護のことば<span class=\"sub\">現場でよく使う言葉を、絵カードで少しずつ覚えます</span>";
+    var html = "<div class=\"cat-list\">";
+    CATS.forEach(function(c){
+      var m = masteredCount(c.id), t = totalCount(c.id);
+      var pct = t ? Math.round(m/t*100) : 0;
+      html += "<button class=\"cat-card\" data-cat=\""+c.id+"\">"
+        + "<div class=\"icon\">"+c.icon+"</div>"
+        + "<div class=\"meta\">"
+        + "<div class=\"name\">"+c.name+"</div>"
+        + "<div class=\"count\">"+(mode==="quiz" ? t+"問" : "覚えた "+m+" / "+t)+"</div>"
+        + (mode!=="quiz" ? "<div class=\"bar-track\"><div class=\"bar-fill\" style=\"width:"+pct+"%\"></div></div>" : "")
+        + "</div>"
+        + "<div class=\"chev\">›</div>"
+        + "</button>";
+    });
+    html += "</div>";
+    main.innerHTML = html;
+    main.querySelectorAll(".cat-card").forEach(function(el){
+      el.addEventListener("click", function(){
+        state.catId = el.dataset.cat;
+        if (state.tab === "learn") { state.cardIndex = 0; state.flipped = false; }
+        else { startQuiz(el.dataset.cat); }
+        render();
+      });
+    });
+  }
+
+  // ---------- フラッシュカード ----------
+  function renderFlashcards(){
+    var cat = CATS.filter(function(c){ return c.id === state.catId; })[0];
+    var words = WORDS[state.catId];
+    var idx = state.cardIndex;
+    var w = words[idx];
+    titleEl.innerHTML = cat.name + "<span class=\"sub\">タップして裏面を見ます</span>";
+
+    var isMastered = !!(progress[cat.id] && progress[cat.id][idx]);
+
+    var html = "";
+    html += "<div class=\"back-row\">"
+      + "<button class=\"back-btn\" id=\"toList\">‹ カテゴリー</button>"
+      + "<span class=\"progress-tag\">"+(idx+1)+" / "+words.length+"</span>"
+      + "</div>";
+
+    html += "<div class=\"flash-wrap\">"
+      + "<div class=\"flashcard"+(state.flipped ? " flipped" : "")+"\" id=\"card\">"
+      + "<div class=\"face front\">"
+      + "<div class=\"term-kanji\">"+renderRuby(w.term)+"</div>"
+      + "<div class=\"tap-hint\">タップして意味を見る</div>"
+      + "</div>"
+      + "<div class=\"face back\">"
+      + "<div class=\"block\"><div class=\"label\">やさしい日本語</div><div class=\"easy-text\">"+w.easy+"</div></div>"
+      + "<div class=\"block\"><div class=\"label\">例文</div><div class=\"example\">"+renderRuby(w.ex)+"</div></div>"
+      + "<div class=\"block\"><div class=\"label\">English</div><div class=\"en\">"+w.en+"</div></div>"
+      + "</div>"
+      + "</div>"
+      + "</div>";
+
+    html += "<div class=\"card-nav\">"
+      + "<button class=\"nav-btn again\" id=\"btnAgain\">まだ</button>"
+      + "<button class=\"nav-btn mastered\" id=\"btnMastered\">"+(isMastered ? "✓ 覚えた" : "覚えた")+"</button>"
+      + "</div>";
+
+    main.innerHTML = html;
+
+    document.getElementById("toList").addEventListener("click", function(){
+      state.catId = null; render();
+    });
+    document.getElementById("card").addEventListener("click", function(){
+      state.flipped = !state.flipped;
+      render();
+    });
+    document.getElementById("btnAgain").addEventListener("click", function(e){
+      e.stopPropagation();
+      if (progress[cat.id]) progress[cat.id][idx] = false;
+      nextCard(words.length);
+    });
+    document.getElementById("btnMastered").addEventListener("click", function(e){
+      e.stopPropagation();
+      if (!progress[cat.id]) progress[cat.id] = {};
+      progress[cat.id][idx] = true;
+      saveProgress(progress);
+      nextCard(words.length);
+    });
+  }
+
+  function nextCard(len){
+    state.flipped = false;
+    state.cardIndex = (state.cardIndex + 1) % len;
+    render();
+  }
+
+  // ---------- クイズ ----------
+  var quizState = null;
+  function startQuiz(catId){
+    var words = WORDS[catId].map(function(w, i){ return Object.assign({}, w, {_i:i}); });
+    var order = words.slice().sort(function(){ return Math.random() - 0.5; });
+    quizState = { catId: catId, order: order, idx: 0, correct: 0, answered: false };
+  }
+
+  function buildOptions(correctWord, allWords){
+    var pool = allWords.filter(function(w){ return w.term !== correctWord.term; });
+    pool.sort(function(){ return Math.random() - 0.5; });
+    var options = pool.slice(0, 3).concat([correctWord]);
+    options.sort(function(){ return Math.random() - 0.5; });
+    return options;
+  }
+
+  function renderQuiz(){
+    var cat = CATS.filter(function(c){ return c.id === state.catId; })[0];
+    if (!quizState || quizState.catId !== state.catId) startQuiz(state.catId);
+
+    if (quizState.idx >= quizState.order.length) {
+      titleEl.innerHTML = cat.name + "<span class=\"sub\">クイズ結果</span>";
+      main.innerHTML = "<div class=\"back-row\"><button class=\"back-btn\" id=\"toList\">‹ カテゴリー</button></div>"
+        + "<div class=\"quiz-result\">"
+        + "<div class=\"big\">"+quizState.correct+" / "+quizState.order.length+"</div>"
+        + "<p>正解しました。もう一度挑戦して、記憶を定着させましょう。</p>"
+        + "<button class=\"quiz-next\" id=\"retry\">もう一度挑戦する</button>"
+        + "</div>";
+      document.getElementById("toList").addEventListener("click", function(){ state.catId = null; quizState = null; render(); });
+      document.getElementById("retry").addEventListener("click", function(){ startQuiz(state.catId); render(); });
+      return;
+    }
+
+    var w = quizState.order[quizState.idx];
+    var options = buildOptions(w, WORDS[state.catId]);
+
+    titleEl.innerHTML = cat.name + "<span class=\"sub\">正しいことばを選びます</span>";
+
+    var html = "<div class=\"back-row\">"
+      + "<button class=\"back-btn\" id=\"toList\">‹ カテゴリー</button>"
+      + "<span class=\"progress-tag\">"+(quizState.idx+1)+" / "+quizState.order.length+"</span>"
+      + "</div>";
+    html += "<div class=\"quiz-question\">"
+      + "<div class=\"qlabel\">この説明にあうことばは？</div>"
+      + "<div class=\"qtext\">"+w.easy+"</div>"
+      + "</div>";
+    html += "<div class=\"quiz-options\" id=\"opts\">";
+    options.forEach(function(o, i){
+      html += "<button class=\"opt-btn\" data-term=\""+o.term+"\">"+renderRuby(o.term)+"</button>";
+    });
+    html += "</div>";
+    html += "<button class=\"quiz-next hidden\" id=\"nextQ\">次へ</button>";
+
+    main.innerHTML = html;
+    document.getElementById("toList").addEventListener("click", function(){ state.catId = null; quizState = null; render(); });
+
+    var answered = false;
+    main.querySelectorAll(".opt-btn").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        if (answered) return;
+        answered = true;
+        var picked = btn.dataset.term;
+        var isCorrect = picked === w.term;
+        if (isCorrect) quizState.correct++;
+        main.querySelectorAll(".opt-btn").forEach(function(b2){
+          b2.disabled = true;
+          if (b2.dataset.term === w.term) b2.classList.add("correct");
+          else if (b2 === btn) b2.classList.add("wrong");
+        });
+        document.getElementById("nextQ").classList.remove("hidden");
+      });
+    });
+    document.getElementById("nextQ").addEventListener("click", function(){
+      quizState.idx++;
+      render();
+    });
+  }
+
+  // ---------- 進捗 ----------
+  function renderProgressView(){
+    titleEl.innerHTML = "介護のことば<span class=\"sub\">これまでの学習の記録です</span>";
+    var m = totalMasteredAll(), t = totalAll();
+    var html = "<div class=\"summary-card\">"
+      + "<div><div class=\"num\">"+m+" / "+t+"</div><div class=\"lbl\">覚えたことば</div></div>"
+      + "<div style=\"font-size:34px;\">🌱</div>"
+      + "</div>";
+    html += "<div class=\"summary-card\" style=\"flex-direction:column; align-items:stretch;\">";
+    CATS.forEach(function(c){
+      var cm = masteredCount(c.id), ct = totalCount(c.id);
+      html += "<div class=\"prog-row\"><div class=\"name\">"+c.icon+" "+c.name+"</div><div class=\"frac\">"+cm+" / "+ct+"</div></div>";
+    });
+    html += "</div>";
+    html += "<button class=\"reset-btn\" id=\"resetBtn\">学習記録をリセットする</button>";
+    main.innerHTML = html;
+    document.getElementById("resetBtn").addEventListener("click", function(){
+      if (confirm("すべての学習記録を消します。よろしいですか？")) {
+        progress = {};
+        saveProgress(progress);
+        render();
+      }
+    });
+  }
+
+  render();
+})();
+</script>
+</body>
+</html>
